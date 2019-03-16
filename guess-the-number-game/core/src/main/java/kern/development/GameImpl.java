@@ -3,6 +3,9 @@ package kern.development;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 public class GameImpl implements Game {
 
     // == constants ==
@@ -18,13 +21,10 @@ public class GameImpl implements Game {
     private int remainingGuesses;
     private boolean validNumberRange = true;
 
-    // == public methods ==
-    public void setNumberGenerator(NumberGenerator numberGenerator) {
-        this.numberGenerator = numberGenerator;
-        }
-
+    // == init ==
+    @PostConstruct
     @Override
-    public void reset() {
+    public void reset(){
         smallest = 0;
         guess = 0;
         remainingGuesses = guessCount;
@@ -32,6 +32,16 @@ public class GameImpl implements Game {
         number = numberGenerator.next();
         log.debug("the number is {}", number);
     }
+
+    @PreDestroy
+    public void preDestroy(){
+        log.info("in game preDestroy()");
+    }
+
+    // == public methods ==
+    public void setNumberGenerator(NumberGenerator numberGenerator) {
+        this.numberGenerator = numberGenerator;
+        }
 
     @Override
     public int getNumber() {
